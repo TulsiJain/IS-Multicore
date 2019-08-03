@@ -6,8 +6,8 @@
 
 pthread_mutex_t lock; 
 int list_size = 100000000;
-int thread_count = 8;
-int array[100000000];
+int thread_count;
+int array[list_size];
 
 
 void* multiThread_Handler(void *arg) 
@@ -30,8 +30,9 @@ void* multiThread_Handler(void *arg)
 
 } 
 
-int main(void) 
-{ 
+int main(int argc, char *argv[]) 
+{
+  thread_count = atoi(argv[1]); 
 	pthread_t threads[thread_count];
     	for(int i = 0; i < thread_count; i++)
 	{

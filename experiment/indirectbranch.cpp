@@ -6,8 +6,8 @@
 
 pthread_mutex_t lock; 
 int list_size = 100000000;
-int thread_count = 8;
-int array[100000000];
+int thread_count;
+int array[list_size];
 
 // Recall that an indirect branch is one for which the target must be determined 
 // at run-time; common examples being polymorphic code or a jump-table.  
@@ -32,8 +32,7 @@ class Derived : public Base {
 
 void* multiThread_Handler (void *arg) 
 { 
-	int thread_index = *((int *)arg);
-   	printf("thread index %d\n", thread_index);
+	  int thread_index = *((int *)arg);
 
    	pthread_mutex_lock(&lock); 
    	unsigned int start_index = (thread_index*(list_size/thread_count));
@@ -49,8 +48,9 @@ void* multiThread_Handler (void *arg)
    	return NULL;
 } 
 
-int main (void) 
-{ 
+int main(int argc, char *argv[]) 
+{
+  thread_count = atoi(argv[1]);
 	pthread_t threads[thread_count];
     	for (int i = 0; i < thread_count; i++)
 	{
