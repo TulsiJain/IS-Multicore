@@ -18,25 +18,15 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import r2_score
 from sklearn.neighbors import KNeighborsRegressor
 
-def scaled_data(file_name):		# rescales the data so that all the features lie in similar ranges
+# rescales the data so that all the features lie in similar ranges
+def scaled_data(file_name):		
 	data = genfromtxt(file_name, delimiter=',')
 	scalar = StandardScaler()
 	data_normalized = scalar.fit_transform(data[:, 1 : -1])
 	return np.concatenate((data[:, 0 : 1], data_normalized, data[:, -1 :]), axis = 1)
 
-def linear_regression(data):	# with 1-hold out validation
-	predicted_speedups = np.zeros((data.shape[0]))
-	for row_idx in range(0, data.shape[0]):
-		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
-		training_y = np.concatenate((data[0 : row_idx, -1], data[row_idx + 1 :, -1]), axis = 0)
-		reg = Ridge(alpha = 3).fit(training_x ,training_y)
-		test_x = data[row_idx : row_idx + 1, 1 : -1]
-		predicted_speedups[row_idx] = reg.predict(test_x)
-		if row_idx == 0:
-			print(reg.coef_)
-	return predicted_speedups
-
-def gaussian_proces_regressor(data):			# with 1-hold out validation
+# Gaussian process regressor with 1-hold out validation
+def gaussian_proces_regressor(data):
 	predicted_speedups = np.zeros((data.shape[0]))
 	for row_idx in range(0, data.shape[0]):
 		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
@@ -47,27 +37,8 @@ def gaussian_proces_regressor(data):			# with 1-hold out validation
 		predicted_speedups[row_idx] = reg.predict(test_x)
 	return predicted_speedups
 
-def knn(data, k = 5):							# with 1-hold out validation
-	predicted_speedups = np.zeros((data.shape[0]))
-	for row_idx in range(0, data.shape[0]):
-		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
-		training_y = np.concatenate((data[0 : row_idx, -1], data[row_idx + 1 :, -1]), axis = 0)
-		reg = KNeighborsRegressor(n_neighbors = k).fit(training_x ,training_y)
-		test_x = data[row_idx : row_idx + 1, 1 : -1]
-		predicted_speedups[row_idx] = reg.predict(test_x)
-	return predicted_speedups
-
-def support_vector_regression(data):			# with 1-hold out validation
-	predicted_speedups = np.zeros((data.shape[0]))
-	for row_idx in range(0, data.shape[0]):
-		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
-		training_y = np.concatenate((data[0 : row_idx, -1], data[row_idx + 1 :, -1]), axis = 0)
-		reg = SVR(gamma = 0.01, C = 1.0, epsilon = 0.2, kernel = 'rbf').fit(training_x, training_y)
-		test_x = data[row_idx : row_idx + 1, 1 : -1]
-		predicted_speedups[row_idx] = reg.predict(test_x)
-	return predicted_speedups
-
-def random_forrest_regressor(data, n = 100):	# with 1-hold out validation
+# Random forest regressor with 1-hold out validation
+def random_forrest_regressor(data, n = 100):
 	predicted_speedups = np.zeros((data.shape[0]))
 	for row_idx in range(0, data.shape[0]):
 		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
@@ -76,39 +47,6 @@ def random_forrest_regressor(data, n = 100):	# with 1-hold out validation
 		test_x = data[row_idx : row_idx + 1, 1 : -1]
 		predicted_speedups[row_idx] = reg.predict(test_x)
 	return predicted_speedups
-
-def decision_tree_regressor(data, n = 100):		# with 1-hold out validation
-	predicted_speedups = np.zeros((data.shape[0]))
-	for row_idx in range(0, data.shape[0]):
-		training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
-		training_y = np.concatenate((data[0 : row_idx, -1], data[row_idx + 1 :, -1]), axis = 0)
-		reg = tree.DecisionTreeRegressor().fit(training_x, training_y)
-		test_x = data[row_idx : row_idx + 1, 1 : -1]
-		predicted_speedups[row_idx] = reg.predict(test_x)
-	return predicted_speedups
-
-	# predicted_speedups = np.zeros((data.shape[0]))
-	# for row_idx in range(0, data.shape[0]):
-	# 	training_x = np.concatenate((data[0 : row_idx, 1 : -1], data[row_idx + 1 :, 1 : -1]), axis = 0)
-	# 	training_y = np.concatenate((data[0 : row_idx, -1 :], data[row_idx + 1 :, -1 :]), axis = 0)
-	# 	training_data = np.concatenate((training_x, training_y), axis = 1)
-	# 	test_x = data[row_idx : row_idx + 1, 1 : -1]
-	# 	distances = {}
-	# 	for data_point in training_data:
-	# 		x = data_point[: - 1]
-	# 		y = data_point[-1]
-	# 		distances[np.sqrt(np.mean((x - test_x) ** 2))] = y
-	# 	inverse_predicted_speedup = 0.0
-	# 	i = 0
-	# 	sum_inverse_distances = 0.0
-	# 	for key in sorted(distances.keys()):
-	# 		i += 1
-	# 		if i > k:
-	# 			break
-	# 		inverse_predicted_speedup += 1 / (key * y)
-	# 		sum_inverse_distances += 1 / key
-	# 	predicted_speedups[row_idx] = sum_inverse_distances / inverse_predicted_speedup
-	# return predicted_speedups
 	
 data = np.concatenate((scaled_data('data_splash_extended.csv'), scaled_data('data_parsec_extended.csv')), axis = 0)
 
@@ -141,7 +79,6 @@ def train_predict(thread_count, data):
 	print("Mean absolute error")
 	print(mean_absolute_error(actual_speedups, predicted_speedup))
 	print("R squared")
-	# print(r2_score(actual_speedups, predicted_speedup, multioutput='variance_weighted'))
 	SS_Residual = sum((actual_speedups-predicted_speedup)**2)
 	SS_Total = sum((actual_speedups-np.mean(actual_speedups))**2)
 	r_squared = 1 - (float(SS_Residual))/SS_Total
