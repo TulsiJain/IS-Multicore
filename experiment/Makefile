@@ -1,5 +1,5 @@
 n=10;
-exp=floatingpoint
+exp=l1cache
 
 .ONESHELL:
 all:

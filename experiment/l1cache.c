@@ -7,7 +7,7 @@
 pthread_mutex_t lock; 
 int list_size = 100000000;
 int thread_count;
-int array[list_size];
+int array[100000000];
 
 
 void* multiThread_Handler(void *arg) 
@@ -18,15 +18,14 @@ void* multiThread_Handler(void *arg)
 	unsigned int end_index = ((thread_index+1)*(list_size/thread_count));
 	pthread_mutex_unlock(&lock); 
 
-	for(int i =  start_index; i < end_index;  i++)
+	for (int i =  start_index; i < end_index;  i++)
 	{
-		if ( i+10 < end_index){
-			array[i] = array[i + 10];
+		for ( int j = 1; (j < end_index && j <= i + 14); j++) {
+			array[i] +=  array[i+j] + j;
 		}
-		
+		printf("%d\n", array[i]);
 	}
 	return NULL;
-
 } 
 
 int main(int argc, char *argv[]) 
