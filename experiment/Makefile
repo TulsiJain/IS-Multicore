@@ -1,5 +1,5 @@
 n=10;
-exp=lastlevel
+exp=floatingpoint
 
 .ONESHELL:
 all:

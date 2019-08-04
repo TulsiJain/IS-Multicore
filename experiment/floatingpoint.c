@@ -5,24 +5,21 @@
 #include<unistd.h> 
 
 pthread_mutex_t lock; 
-int list_size = 100000;
+int list_size = 10000;
 int thread_count;
-float array[list_size];
+float array[10000];
 
 void* multiThread_Handler(void *arg) 
 { 
 	int thread_index = *((int *)arg);
-   	printf("thread index %d\n", thread_index);
-
    	pthread_mutex_lock(&lock); 
    	unsigned int start_index = (thread_index * (list_size/thread_count));
    	unsigned int end_index = ((thread_index + 1) * (list_size
    	    / thread_count));
    	pthread_mutex_unlock(&lock); 
    	for (int i =  start_index; i < end_index;  i++) {
-   		array[i] = (float)((11+i)*array[i])/(51+i)
-   		    + (float)((21+i)*array[i])/(61+i);
-   		    + (float)((31+i)*array[i])/(71+i);
+   		array[i] = (float)((51+i)*array[i] + i)/((float)(11+i))
+   		    + (float)((61+i)*array[i] + i)/((float)(21+i));
    	}
    	return NULL;
 } 
@@ -43,5 +40,5 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < thread_count; i++) {
 		pthread_join(threads[i], NULL);
 	}
-    exit(0); 
+	exit(0); 
 }
