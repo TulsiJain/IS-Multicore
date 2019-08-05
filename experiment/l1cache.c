@@ -18,12 +18,10 @@ void* multiThread_Handler(void *arg)
 	unsigned int end_index = ((thread_index+1)*(list_size/thread_count));
 	pthread_mutex_unlock(&lock); 
 
-	for (int i =  start_index; i < end_index;  i++)
-	{
+	for (int i =  start_index; i < end_index;  i++) {
 		for ( int j = 1; (j < end_index && j <= i + 14); j++) {
 			array[i] +=  array[i+j] + j;
 		}
-		printf("%d\n", array[i]);
 	}
 	return NULL;
 } 
@@ -32,11 +30,11 @@ int main(int argc, char *argv[])
 {
 	thread_count = atoi(argv[1]); 
 	pthread_t threads[thread_count];
-	for(int i = 0; i < thread_count; i++)
-	{
+	for (int i = 0; i < thread_count; i++) {
 		int *arg = (int *) malloc(sizeof(*arg));
 		*arg = i;
-		int error = pthread_create(&(threads[i]), NULL, multiThread_Handler, arg);
+		int error = pthread_create(&(threads[i]), NULL,
+		    multiThread_Handler, arg);
 		if (error != 0)
 			printf("\nCan't create thread :[%s]", strerror(error));
 	}
