@@ -5,9 +5,9 @@
 #include<unistd.h> 
 
 pthread_mutex_t lock; 
-int list_size = 10000;
+int list_size = 10000000;
 int thread_count;
-float array[10000];
+float array[10000000];
 
 void* multiThread_Handler(void *arg) 
 { 
@@ -20,6 +20,7 @@ void* multiThread_Handler(void *arg)
    	for (int i =  start_index; i < end_index;  i++) {
    		array[i] = (float)((51+i)*array[i] + i)/((float)(11+i))
    		    + (float)((61+i)*array[i] + i)/((float)(21+i));
+   		    + (float)((71+i)*array[i] + i)/((float)(31+i));
    	}
    	return NULL;
 } 
