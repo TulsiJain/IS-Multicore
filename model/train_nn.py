@@ -82,66 +82,23 @@ def nn_regression(data, testing_starting_point, threads):
 		 
 data = np.concatenate((scaled_data('data_splash_extended.csv'), scaled_data('data_parsec_extended.csv')), axis = 0)
 
-data_4_threads = []
-data_8_threads = []
-data_16_threads = []
-data_32_threads = []
-
+train_data_final = [] 
 for i in range(0, data.shape[0]):
-	if abs(data[i][0] - 4.00) < 0.1: 
-		data_4_threads.append(data[i])
-	elif abs(data[i][0] - 8.00) < 0.1: 
-		data_8_threads.append(data[i])
-	elif abs(data[i][0] - 16.00) < 0.1: 
-		data_16_threads.append(data[i])
-	elif abs(data[i][0] - 32.00) < 0.1: 
-		data_32_threads.append(data[i])
-
-
-data_4_threads = np.array(data_4_threads)
-data_8_threads = np.array(data_8_threads)
-data_16_threads = np.array(data_16_threads)
-data_32_threads = np.array(data_32_threads)
+	if data[i][0] != 1:
+		train_data_final.append(data[i])
+train_data_final = np.array(train_data_final)
 
 test_data_ratio = 0.8
-testing_position_4 = (int) (data_4_threads.shape[0]*test_data_ratio)
-actual_speedups_4_threads = data_4_threads[testing_position_4:, -1]
-testing_position_8 = (int) (data_8_threads.shape[0]*test_data_ratio)
-actual_speedups_8_threads = data_8_threads[testing_position_8:, -1]
-testing_position_16 = (int) (data_16_threads.shape[0]*test_data_ratio)
-actual_speedups_16_threads = data_16_threads[testing_position_16:, -1]
-testing_position_32 = (int) (data_32_threads.shape[0]*test_data_ratio)
-actual_speedups_32_threads = data_32_threads[testing_position_32:, -1]
+testing_data_position = (int) (train_data_final.shape[0]*test_data_ratio)
+actual_speedups = train_data_final[testing_data_position:, -1]
 
-predicted_speedups_4_threads = nn_regression(data_4_threads, testing_position_4, 4)
-predicted_speedups_8_threads = nn_regression(data_8_threads, testing_position_8, 8)
-predicted_speedups_16_threads = nn_regression(data_16_threads, testing_position_16, 16)
-predicted_speedups_32_threads = nn_regression(data_32_threads, testing_position_32, 32)
 
-print('Speedups with 4 threads:')
-print(actual_speedups_4_threads)
-print('Predicted speedups with 4 threads:')
-print(predicted_speedups_4_threads)
+predicted_speedups = nn_regression(train_data_final, testing_data_position, "_nn_regression")
+predicted_speedups = np.array(predicted_speedups)[0]
+
+print('Speedups:')
+print(actual_speedups)
+print('Predicted speedups:')
+print(predicted_speedups)
 print('Correlation:')
-print(np.corrcoef(actual_speedups_4_threads, predicted_speedups_4_threads)[0, 1])
-
-print('Speedups with 8 threads:')
-print(actual_speedups_8_threads)
-print('Predicted speedups with 8 threads:')
-print(predicted_speedups_8_threads)
-print('Correlation:')
-print(np.corrcoef(actual_speedups_8_threads, predicted_speedups_8_threads)[0, 1])
-
-print('Speedups with 16 threads:')
-print(actual_speedups_16_threads)
-print('Predicted speedups with 16 threads:')
-print(predicted_speedups_16_threads)
-print('Correlation:')
-print(np.corrcoef(actual_speedups_16_threads, predicted_speedups_16_threads)[0, 1])
-
-print('Speedups with 32 threads:')
-print(actual_speedups_32_threads)
-print('Predicted speedups with 32 threads:')
-print(predicted_speedups_32_threads)
-print('Correlation:')
-print(np.corrcoef(actual_speedups_32_threads, predicted_speedups_32_threads)[0, 1])
+print(np.corrcoef(actual_speedups, predicted_speedups)[0, 1])

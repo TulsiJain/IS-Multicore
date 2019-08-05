@@ -47,29 +47,12 @@ def random_forrest_regressor(data, n = 100):
 		test_x = data[row_idx : row_idx + 1, 1 : -1]
 		predicted_speedups[row_idx] = reg.predict(test_x)
 	return predicted_speedups
-	
-data = np.concatenate((scaled_data('data_splash_extended.csv'), scaled_data('data_parsec_extended.csv')), axis = 0)
 
-data_4_threads = []
-data_8_threads = []
-data_16_threads = []
-data_32_threads = []
-
-for i in range(0, data.shape[0]):
-	if abs(data[i][0] - 4.00) < 0.1: 
-		data_4_threads.append(data[i])
-	elif abs(data[i][0] - 8.00) < 0.1: 
-		data_8_threads.append(data[i])
-	elif abs(data[i][0] - 16.00) < 0.1: 
-		data_16_threads.append(data[i])
-	elif abs(data[i][0] - 32.00) < 0.1: 
-		data_32_threads.append(data[i])
-
-def train_predict(thread_count, data):
+def train_predict(data):
 	data = np.array(data)
 	actual_speedups = data[:, -1]
 	predicted_speedup = gaussian_proces_regressor(data)
-	print('Evaluation metrics for ' + str(thread_count)  + ' threads:')
+	# print('Evaluation metrics for ' + str(thread_count)  + ' threads:')
 	print("Co-relation Coofficient")
 	print(np.corrcoef(actual_speedups, predicted_speedup)[0, 1])
 	print("Variance Score")
@@ -86,8 +69,12 @@ def train_predict(thread_count, data):
 	adjusted_r_squared = 1 - (1-r_squared)*(len(actual_speedups)-1)/(len(actual_speedups)-data.shape[1]-3)
 	print("Adjusted R squared")
 	print(str(adjusted_r_squared) + "\n")
+	
+data = np.concatenate((scaled_data('data_splash_extended.csv'), scaled_data('data_parsec_extended.csv')), axis = 0)
 
-train_predict(4, data_4_threads)
-train_predict(8, data_8_threads)
-train_predict(16, data_16_threads)
-train_predict(32 ,data_32_threads)
+train_data_final = [] 
+for i in range(0, data.shape[0]):
+	if data[i][0] != 1:
+		train_data_final.append(data[i])
+train_data_final = np.array(train_data_final)
+train_predict(train_data_final)
