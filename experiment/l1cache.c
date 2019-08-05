@@ -5,9 +5,9 @@
 #include<unistd.h> 
 
 pthread_mutex_t lock; 
-int list_size = 5000000;
+int list_size = 100000000;
 int thread_count;
-int array[5000000];
+int array[100000000];
 
 
 void* multiThread_Handler(void *arg) 
