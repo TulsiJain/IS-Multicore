@@ -19,9 +19,11 @@ void* multiThread_Handler(void *arg)
 	pthread_mutex_unlock(&lock); 
 
 	for (int i =  start_index; i < end_index;  i++) {
-		for ( int j = 1; (j < end_index && j <= i + 14); j++) {
-			array[i] +=  array[i+j] + j;
+		int a;
+		for ( int j = 1; j < end_index && j <= i + 11; j++) {
+			a = a + array[i+j];
 		}
+		array[i] = array[i] + a;
 	}
 	return NULL;
 } 

@@ -1,4 +1,4 @@
-n=10;
+n=1;
 exp=l1cache
 
 .ONESHELL:
