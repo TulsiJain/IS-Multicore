@@ -18,13 +18,12 @@ void* multiThread_Handler(void *arg)
 	unsigned int end_index = ((thread_index+1)*(list_size/thread_count));
 	pthread_mutex_unlock(&lock); 
 
-	for (int i =  start_index; i < end_index;  i++) {
-		int a;
-		for ( int j = 1; j < end_index && j <= i + 11; j++) {
-			a = (a + array[i+j])%100;
-		}
-		array[i] = array[i] + a;
-		// printf("%d\n", array[i]);
+	for (int i =  start_index; i < end_index - 12;  i++) {
+		int a = array[i+1] + array[i+2] + array[i+3] + array[i+4]
+		    + array[i+5] + array[i+6] + array[i+7] + array[i+8]
+		    + array[i+9] + array[i+10] + array[i+11] + array[i+12];
+		array[i] = array[i] + a%100;
+		array[i] = array[i]%100;
 	}
 	return NULL;
 } 
